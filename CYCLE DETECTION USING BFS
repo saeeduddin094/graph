@@ -1,0 +1,57 @@
+#include<unordered_map>
+#include<list>
+#include<vector>
+#include<string>
+#include<queue>
+bool cyclic(unordered_map<int,list<int>> &m,unordered_map<int,bool> &visited,int index)
+{
+    visited[index]=true;
+    queue<int> q;
+    q.push(index);
+    unordered_map<int,int> parent;
+    parent[index]=-1;
+    while(!q.empty())
+    {
+        int frontnodes=q.front();
+        q.pop();
+        for(auto neighbour : m[frontnodes])
+        {
+            if(visited[neighbour]==true && parent[frontnodes]!=neighbour)
+            {
+                return true;
+            }
+            else if(!visited[neighbour])
+            {
+                q.push(neighbour);
+                visited[neighbour]=true;
+                parent[neighbour]=frontnodes;
+            }
+        }
+    }
+    return false;
+}
+string cycleDetection (vector<vector<int>>& edges, int n, int mt)
+{
+    unordered_map<int,list<int> > m;
+    for(int i=0;i<mt;i++)
+    {
+        int x=edges[i][0];
+        int y=edges[i][1];
+        m[x].push_back(y);
+        m[y].push_back(x);
+    }
+    unordered_map<int,bool> visited;
+    for(int i=0;i<n;i++)
+    {
+        if(!visited[i])
+        {
+            bool flag=cyclic(m,visited,i);
+            if(flag)
+            {
+                return "Yes";
+            }
+        }
+    }
+    return "No";
+
+}
