@@ -1,0 +1,48 @@
+#include<unordered_map>
+#include<vector>
+#include<list>
+bool dfs_cyclic_directed(unordered_map<int,list<int> > &adj,unordered_map<int,bool> & visited,unordered_map<int ,bool> &dfs,int i)
+{
+  visited[i]=true;
+  dfs[i]=true;
+  for(auto neigbour: adj[i])
+  {
+    if(!visited[neigbour])
+    {
+      bool ans=dfs_cyclic_directed(adj, visited, dfs, neigbour);
+      if(ans==true)
+      {
+        return true;
+      }
+    }
+    else if (dfs[neigbour])
+    {
+      return true;
+    }
+    
+  }
+  dfs[i]=false;
+  return false;
+}
+int detectCycleInDirectedGraph(int n, vector < pair < int, int >> & edges) {
+        unordered_map<int,list<int>> adj;   
+        for(int i=0;i<edges.size();i++)
+        {
+           adj[edges[i].first].push_back(edges[i].second);           
+        }
+        unordered_map<int,bool> visited;
+        unordered_map<int,bool> dfs;
+        for(int i=1;i<=n;i++)
+        {
+             if(!visited[i])
+             {
+               bool x=dfs_cyclic_directed(adj,visited,dfs,i);
+                if(x)
+             {
+               return 1;
+             }
+             }
+            
+        }
+        return 0;
+  }
